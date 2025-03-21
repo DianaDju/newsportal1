@@ -1,0 +1,125 @@
+1.Создаем пользователей:
+
+u1 = User.objects.create_user(username='Diana')
+u2 = User.objects.create_user(username='Melissa')
+
+2.Создаем авторов, связанных с нашими пользователями:
+
+a1 = Author.objects.create(authorUser=u1)
+a2 = Author.objects.create(authorUser=u2)
+
+3.Добавляем категории:
+
+c1 = Category.objects.create(name='SPORT')
+c2 = Category.objects.create(name='POLITICS')
+c3 = Category.objects.create(name='IT')
+c4 = Category.objects.create(name='EDUCATION')
+
+4.Добавляем 2 статьи и 1 новость:
+
+author1 = Author.objects.get(id=1)
+p1 = Post.objects.create(author=author1, categoryType='NW', title='Breaking news',text='I am creating my first news item in the database!')
+p2 = Post.objects.create(author=author1, categoryType='AR', title='Did she succeed?', text='Yes, I think I am good at writing articles and news.')
+author2 = Author.objects.get(id=2)
+p3 = Post.objects.create(author=author2, categoryType='AR', title='I am tired', text=' I am happy, but so tired.')
+
+5.Присваиваем категории нашим постам:
+
+ca1 = Post.objects.get(id=1).postCategory.add(Category.objects.get(id=2))
+ca2 = Post.objects.get(id=2).postCategory.add(Category.objects.get(id=3))
+ca3 = Post.objects.get(id=2).postCategory.add(Category.objects.get(id=4))
+ca4 = Post.objects.get(id=3).postCategory.add(Category.objects.get(id=1))
+
+6.Создаем комментарии к постам:
+
+com1 = Comment.objects.create(commentPost=Post.objects.get(id=1), commentUser= Author.objects.get(id=2).authorUser, text='congratulations')
+com2 = Comment.objects.create(commentPost=Post.objects.get(id=2), commentUser= Author.objects.get(id=2).authorUser, text='Go ahead! You are doing well!')
+com3 = Comment.objects.create(commentPost=Post.objects.get(id=3), commentUser= Author.objects.get(id=1).authorUser, text='Are you okay?')
+com4 = Comment.objects.create(commentPost=Post.objects.get(id=3), commentUser= Author.objects.get(id=1).authorUser, text='Do not give up!')
+
+7.Ставим лайки и дизлайки к комментариям:
+
+Comment.objects.get(id=1).like()
+Comment.objects.get(id=1).like()
+Comment.objects.get(id=1).like()
+Comment.objects.get(id=1).like()
+Comment.objects.get(id=1).rating
+4
+
+Comment.objects.get(id=3).like()
+Comment.objects.get(id=3).dislike()
+Comment.objects.get(id=3).dislike()
+Comment.objects.get(id=3).dislike()
+Comment.objects.get(id=3).rating
+-2
+
+Comment.objects.get(id=2).like()
+Comment.objects.get(id=2).rating
+1
+
+Comment.objects.get(id=4).dislike()
+Comment.objects.get(id=4).rating
+-1
+
+ К постам:
+
+Post.objects.get(id=1).like()
+Post.objects.get(id=1).like()
+Post.objects.get(id=2).like()
+Post.objects.get(id=3).dislike()
+
+8. Обновляем рейтинги пользователей:
+
+author1.update_rating()
+author1.ratingAuthor
+6
+
+author2.update_rating()
+author2.ratingAuthor
+2
+
+9.Ищем лучшего пользователя по рейтингу:
+
+a = Author.objects.order_by('-ratingAuthor')[:1]
+a
+<QuerySet [<Author: Author object (1)>]>
+
+ Выводим имя и рейтинг этого пользователя:
+
+for i in a:
+    i.ratingAuthor
+    i.authorUser.username
+
+6
+'Diana'
+
+10.Ищем лучший пост по лайкам и дизлайкам:
+
+bestPost = Post.objects.order_by('-rating')[:1]
+bestPost
+<QuerySet [<Post: Post object (1)>]>
+
+ Выводим дату добавления, username автора, рейтинг, заголовок и превью лучшей статьи:
+
+for i in bestPost:
+    i.dateCreation
+    i.author.authorUser
+    i.rating
+    i.title
+    i.preview()
+
+11.Выводим все комментарии (дата, пользователь, рейтинг, текст) к этой статье:
+
+bestPostCom = Comment.objects.filter(commentPost=1)
+bestPostCom
+<QuerySet [<Comment: Comment object (1)>]>
+
+for k in bestPostCom:
+    k.dateCreating
+    k.commentUser
+    k.rating
+    k.text
+
+
+
+
